@@ -18,7 +18,7 @@ int main() {
 
     //setup
     stdio_init_all();
-	i2c_init(i2c1, 400000);                 //Initialize I2C on i2c1 port with 400kHz
+    i2c_init(i2c1, 400000);                 //Initialize I2C on i2c1 port with 400kHz
     gpio_set_function(2, GPIO_FUNC_I2C);    //Use GPIO2 as I2C
     gpio_set_function(3, GPIO_FUNC_I2C);    //Use GPIO3 as I2C
     gpio_pull_up(2);                        //Pull up GPIO2

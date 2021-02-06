@@ -14,49 +14,56 @@
 */
 SSD1306::SSD1306(uint16_t const DevAddr, uint8_t const width, uint8_t const height, i2c_inst_t * i2c) : DevAddr(DevAddr), width(width), height(height), i2c(i2c) 
 {
+	this->buffer = new unsigned char[this->width*this->height/8];
+	this->sendCommand(SSD1306_DISPLAYOFF);
+
+	this->sendCommand(SSD1306_SETLOWCOLUMN);
+	this->sendCommand(SSD1306_SETHIGHCOLUMN);
+	this->sendCommand(SSD1306_SETSTARTLINE);
+	this->sendCommand(SSD1306_MEMORYMODE);  
+	this->sendCommand(0x00);  
 	
-	this->sendCommand(0xAE);  // Display Off
-
-	this->sendCommand(0x00);
-	this->sendCommand(0x10);
-	this->sendCommand(0x40);
-	this->sendCommand(0x20);  // Set addressing mode
-	this->sendCommand(0x00);  // Horizontal Addressing Mode
-
 	this->setContrast(0xFF);
 
 	this->rotateDisplay(1);
 
-	this->sendCommand(0xA6);  // Set Normal Display
+	this->sendCommand(SSD1306_NORMALDISPLAY);
 
-	this->sendCommand(0xA8);  // Select Multiplex Ratio
-	this->sendCommand(0x3F);  // Default => 0x3F (1/64 Duty)	0x1F(1/32 Duty)
+	this->sendCommand(0xA8);
+	this->sendCommand(0x3F);
 
-	this->sendCommand(0xD3);  // Setting Display Offset
-	this->sendCommand(0x00);  // 00H Reset
+	this->sendCommand(SSD1306_SETDISPLAYOFFSET);
+	this->sendCommand(0x00);
 
-	this->sendCommand(0xD5);  // SET DISPLAY CLOCK
-	this->sendCommand(0x80);  // 105HZ
+	this->sendCommand(SSD1306_SETDISPLAYCLOCKDIV);
+	this->sendCommand(0x80);
 
-	this->sendCommand(0xD9);	// Set Pre-Charge period
+	this->sendCommand(SSD1306_SETPRECHARGE);
 	this->sendCommand(0x22);
 
-	this->sendCommand(0xDA);  // Set COM Hardware Configuration
-	this->sendCommand(0x12);  // Alternative COM Pin---See IC Spec page 34
-							// (0x02)=> A4=0;Sequential COM pin configuration;A5=0;Disable COM Left/Right remap
-
-	this->sendCommand(0xDB);	// Set Deselect Vcomh level
+	this->sendCommand(SSD1306_SETCOMPINS);
+	this->sendCommand(0x12);
+	
+	this->sendCommand(SSD1306_SETVCOMDETECT);	
 	this->sendCommand(0x40);
 
-	this->sendCommand(0x8D);  // Set Charge Pump
-	//this->sendCommand(0x10);  // Disable Charge Pump
-	this->sendCommand(0x14);  // Endable Charge Pump
+	this->sendCommand(SSD1306_CHARGEPUMP);
+	this->sendCommand(0x14);
 
-	this->sendCommand(0xA4);  // Entire Display ON
+	this->sendCommand(SSD1306_DISPLAYALLON_RESUME);
 
 	this->displayON(1);
+	this->clear();
+	this->display();
 }
 
+/*!
+    @brief  Deconstructor for I2C-interfaced OLED display.
+*/
+SSD1306::~SSD1306() 
+{
+	delete this->buffer;
+}
 
 /*!
  * @brief Send command to display.
@@ -64,8 +71,8 @@ SSD1306::SSD1306(uint16_t const DevAddr, uint8_t const width, uint8_t const heig
  */
 void SSD1306::sendCommand(uint8_t command)
 {	
-	uint8_t dupa[2] = {0x00, command};
-	i2c_write_blocking(this->i2c, this->DevAddr, dupa, 2, false);
+	uint8_t mess[2] = {0x00, command};
+	i2c_write_blocking(this->i2c, this->DevAddr, mess, 2, false);
 }
 
 
@@ -111,7 +118,7 @@ void SSD1306::displayON(uint8_t On)
  */
 void SSD1306::setContrast(uint8_t Contrast)
 {
-	this->sendCommand(0x81);	// Set Contrast Control
+	this->sendCommand(SSD1306_SETCONTRAST);
 	this->sendCommand(Contrast);
 }
 
@@ -162,21 +169,19 @@ void SSD1306::display(unsigned char *data)
 	this->sendCommand(0x22);
 	this->sendCommand(0x00);
 	this->sendCommand(0x07);
-
-	uint16_t size = 1025;
-
-	unsigned char mess[size];
-
-	mess[0] = '@';
-
-	for(int i = 1; i < size; i++) 
-	{
-		mess[i] = data[i-1];
-	}
-
-	i2c_write_blocking(this->i2c, this->DevAddr, mess, size, false);
+	this->sendData(data, this->width*this->height/8);
 }
 
+
+void SSD1306::sendData(uint8_t* buffer, size_t buff_size)
+{
+	unsigned char mess[buff_size+1];
+
+	mess[0] = 0x40;
+	memcpy(mess+1, buffer, buff_size);
+
+	i2c_write_blocking(this->i2c, this->DevAddr, mess, buff_size+1, false);
+}
 
 
 /*!

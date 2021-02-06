@@ -47,11 +47,14 @@ class SSD1306 {
 		uint8_t width;
 		uint8_t height;
 		
-		unsigned char buffer[1025]; // TUTAJ TRZEBA TO POPRAWIC BO WSTYD
+		unsigned char * buffer;
+
+		void sendData(uint8_t* buffer, size_t buff_size);
 		void sendCommand(uint8_t command);
 
 	public:
 		SSD1306(uint16_t const DevAddr, uint8_t const width, uint8_t const height, i2c_inst_t * i2c);
+		~SSD1306();
 
 		void displayON(uint8_t On);
 		void invertColors(uint8_t Invert);

@@ -21,7 +21,7 @@ This gives you the ability to display a bitmap or array of pixels.
 You need the GFX library to make it easier to create images for your display. (`GFX.hpp` and `GFX.cpp`)
 
 `logo.hpp` is an example showing how to create bitmaps.
-`fonts.hpp` contains one font. You can download more fonts from https://github.com/adafruit/Adafruit-GFX-Library/tree/master/Fonts
+`fonts.hpp` contains one font.
 
 ## Example
 Repo provides an example of how a library can be used.

@@ -8,19 +8,20 @@ https://github.com/adafruit/Adafruit-GFX-Library
 
 ## Hardware
 Connect your SSD1306 oled display to i2c1 port (you can change it during initialization)
-
+```
 SDA->GPIO2
 SCL->GPIO3
 GND->GND
 VCC->3V3(OUT)
+```
 
 ## Software
-The library needs only two files to run 'SSD1306.hpp' and 'SSD1306.cpp'.
+The library needs only two files to run `SSD1306.hpp` and `SSD1306.cpp`.
 This gives you the ability to display a bitmap or array of pixels. 
-You need the GFX library to make it easier to create images for your display. ('GFX.hpp' and 'GFX.cpp')
+You need the GFX library to make it easier to create images for your display. (`GFX.hpp` and `GFX.cpp`)
 
-'logo.hpp' is an example showing how to create bitmaps
-'fonts.hpp' contains one font. You can download more fonts from https://github.com/adafruit/Adafruit-GFX-Library/tree/master/Fonts
+`logo.hpp` is an example showing how to create bitmaps
+`fonts.hpp` contains one font. You can download more fonts from https://github.com/adafruit/Adafruit-GFX-Library/tree/master/Fonts
 
 ## Example
 Repo provides an example of how a library can be used.

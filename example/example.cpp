@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
-#include "../logo.hpp"
-#include "../GFX.hpp"
+#include <logo.hpp>
+#include <GFX.hpp>
 
 int main() {
 
@@ -15,7 +15,8 @@ int main() {
     gpio_pull_up(2);                        //Pull up GPIO2
     gpio_pull_up(3);                        //Pull up GPIO3
 
-    GFX oled(0x3C, size::W128xH32, i2c1);   //Declare oled instance
+    GFX oled(0x3C, size::W128xH64, i2c1);   //Declare oled instance
+    // if you are using 128x32 oled try size::W128xH32
 
     oled.display(logo);                     //Display bitmap
     

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hardware/i2c.h"
+#include "hardware/dma.h"
 #include "string.h"
 #include "stdint.h"
 
@@ -51,14 +52,16 @@ class SSD1306 {
 		uint8_t width;
 		uint8_t height;
 		size Size;
+		int dmaChannel;
 		
 		unsigned char * buffer;
+		unsigned char * mess;
 
 		void sendData(uint8_t* buffer, size_t buff_size);
 		void sendCommand(uint8_t command);
 
 	public:
-		SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c);
+		SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c, uint8_t dma = 1);
 		~SSD1306();
 
 		void displayON(uint8_t On);

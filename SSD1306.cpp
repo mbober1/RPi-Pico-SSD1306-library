@@ -10,14 +10,31 @@
             Display height.
     @param  i2c
             Pointer to an existing i2c instance.
+    @param  dma
+            0 - disable DMA
+			1 - enable DMA
     @return SSD1306 object.
 */
-SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(DevAddr), width(width), height(height), i2c(i2c), Size(Size)
+SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c, uint8_t dma) : DevAddr(DevAddr), width(width), height(height), i2c(i2c), Size(Size)
 {
 	this->width = 128;
 	this->height = 64;
-	
+
 	this->buffer = new unsigned char[this->width*this->height/8];
+	this->mess = new unsigned char[(this->width*this->height/8) + 1];
+	memset(buffer, 0xFF, (this->height * this->width / 8) + 1);
+	mess[0] = 0x40;
+
+	if(dma) {
+		this->dmaChannel = dma_claim_unused_channel(false);
+		if(this->dmaChannel != -1) {
+			dma_channel_config dmaConfig = dma_channel_get_default_config(this->dmaChannel);
+			channel_config_set_transfer_data_size(&dmaConfig, DMA_SIZE_8);
+			channel_config_set_dreq(&dmaConfig, DREQ_I2C1_TX);
+			dma_channel_configure(this->dmaChannel, &dmaConfig, &i2c_get_hw(i2c)->dma_tdlr, this->mess, this->width*this->height/8, true);
+		}
+	}
+	
 	this->sendCommand(SSD1306_DISPLAYOFF);
 
 	this->sendCommand(SSD1306_SETLOWCOLUMN);
@@ -180,7 +197,7 @@ void SSD1306::display(unsigned char *data)
 	this->sendCommand(0x22);
 	this->sendCommand(0x00);
 	this->sendCommand(0x07);
-	this->sendData(data, this->width*this->height/8);
+	// this->sendData(data, this->width*this->height/8);
 }
 
 
@@ -190,7 +207,7 @@ void SSD1306::sendData(uint8_t* buffer, size_t buff_size)
 
 	mess[0] = 0x40;
 	memcpy(mess+1, buffer, buff_size);
-
+	// dma_channel_start(this->dmaChannel);
 	i2c_write_blocking(this->i2c, this->DevAddr, mess, buff_size+1, false);
 }
 

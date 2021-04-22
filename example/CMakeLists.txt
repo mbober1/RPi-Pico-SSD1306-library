@@ -42,6 +42,7 @@ target_include_directories(main
 target_link_libraries(main
   pico_stdlib
   hardware_i2c
+  hardware_dma
 )
 
 pico_add_extra_outputs(main)

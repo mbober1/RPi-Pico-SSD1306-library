@@ -40,3 +40,8 @@ make -j4
 
 ## Make your own logo
 http://www.majer.ch/lcd/adf_bitmap.php
+
+## Features
+- [X] Support 128x32 displays
+- [ ] DMA Support
+- [ ] Description of each function

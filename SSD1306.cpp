@@ -60,6 +60,7 @@ SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(
 	this->display();
 }
 
+
 /*!
     @brief  Deconstructor for I2C-interfaced OLED display.
 */
@@ -67,6 +68,7 @@ SSD1306::~SSD1306()
 {
 	delete this->buffer;
 }
+
 
 /*!
  * @brief Send command to display.
@@ -88,6 +90,7 @@ void SSD1306::invertColors(uint8_t Invert)
 	this->sendCommand(Invert ? SSD1306_INVERTDISPLAY : SSD1306_NORMALDISPLAY);
 }
 
+
 /*!
  * @brief Rotate display.
  *
@@ -105,6 +108,7 @@ void SSD1306::rotateDisplay(uint8_t Rotate)
 							// 0xC8	(0xC8) => remapped mode. Scan from COM[N-1] to COM0;;Where N is the Multiplex ratio.
 }
 
+
 /*!
  * @brief Turn on display.
  * 0 – Turn OFF
@@ -114,6 +118,7 @@ void SSD1306::displayON(uint8_t On)
 {
 	this->sendCommand(On ? SSD1306_DISPLAYON : SSD1306_DISPLAYOFF);
 }
+
 
 /*!
  * @brief Set contrast.
@@ -128,7 +133,9 @@ void SSD1306::setContrast(uint8_t Contrast)
 
 /*!
  * @brief Draw pixel in the buffer.
- *
+ * @param x position from the left edge (0, MAX WIDTH)
+ * @param y position from the top edge (0, MAX HEIGHT)
+ * @param color colors::BLACK, colors::WHITE or colors::INVERSE
  */
 void SSD1306::drawPixel(int16_t x, int16_t y, colors Color)
 {
@@ -147,7 +154,7 @@ void SSD1306::drawPixel(int16_t x, int16_t y, colors Color)
 
 /*!
  * @brief Clear the buffer.
- *
+ * @param color colors::BLACK, colors::WHITE or colors::INVERSE
  */
 void SSD1306::clear(colors Color)
 {
@@ -165,7 +172,7 @@ void SSD1306::clear(colors Color)
 
 /*!
  * @brief Send buffer to OLED GCRAM.
- *
+ * @param data (Optional) Pointer to data array.
  */
 void SSD1306::display(unsigned char *data)
 {
@@ -190,7 +197,7 @@ void SSD1306::sendData(uint8_t* buffer, size_t buff_size)
 
 /*!
  * @brief Return display height.
- *
+ * @return display height
  */
 uint8_t SSD1306::getHeight()
 {
@@ -200,7 +207,7 @@ uint8_t SSD1306::getHeight()
 
 /*!
  * @brief Return display width.
- *
+ * @return display width
  */
 uint8_t SSD1306::getWidth()
 {

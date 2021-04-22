@@ -10,7 +10,7 @@
 GFX::GFX(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : SSD1306(DevAddr, Size, i2c) {};
 
 /**
- * Draw one char.
+ * @brief Draw one char.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -36,7 +36,7 @@ void GFX::drawChar(int x, int y, char chr, colors color)
 }
 
 /**
- * Draw string.
+ * @brief Draw string.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -57,7 +57,7 @@ void GFX::drawString(int x, int y, std::string str, colors color)
 
 
 /**
- * Draw empty rectangle.
+ * @brief Draw empty rectangle.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -75,7 +75,7 @@ void GFX::drawRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
 
 
 /**
- * Draw filled rectangle.
+ * @brief Draw filled rectangle.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -92,7 +92,7 @@ void GFX::drawFillRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
 
 
 /**
- * Draw progress bar.
+ * @brief Draw progress bar.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -109,7 +109,7 @@ void GFX::drawProgressBar(int x, int y, uint16_t w, uint16_t h, uint8_t progress
 
 
 /**
- * Draw vertical line.
+ * @brief Draw vertical line.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -123,7 +123,7 @@ void GFX::drawVerticalLine(int x, int y, int h, colors color)
 
 
 /**
- * Draw horizontal line.
+ * @brief Draw horizontal line.
  *
  * @param x position from the left edge (0, MAX WIDTH)
  * @param y position from the top edge (0, MAX HEIGHT)
@@ -137,7 +137,7 @@ void GFX::drawHorizontalLine(int x, int y, int w, colors color)
 
 
 /**
- * Draw straight line.
+ * @brief Draw straight line.
  *
  * @param x_start position of the first point from the left edge (0, MAX WIDTH)
  * @param y_start position of the first point from the top edge  (0, MAX HEIGHT)

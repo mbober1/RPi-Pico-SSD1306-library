@@ -118,7 +118,7 @@ void GFX::drawProgressBar(int x, int y, uint16_t w, uint16_t h, uint8_t progress
  */
 void GFX::drawVerticalLine(int x, int y, int h, colors color)
 {
-	this->writeLine(x, y, x, y+h-1, color);
+	this->drawLine(x, y, x, y+h-1, color);
 }
 
 
@@ -132,7 +132,7 @@ void GFX::drawVerticalLine(int x, int y, int h, colors color)
  */
 void GFX::drawHorizontalLine(int x, int y, int w, colors color)
 {
-	this->writeLine(x, y, x+w-1, y, color);
+	this->drawLine(x, y, x+w-1, y, color);
 }
 
 
@@ -145,7 +145,7 @@ void GFX::drawHorizontalLine(int x, int y, int w, colors color)
  * @param y_end position of the second point from the top edge  (0, MAX HEIGHT)
  * @param color colors::BLACK, colors::WHITE or colors::INVERSE
  */
-void GFX::writeLine(int x_start, int y_start, int x_end, int y_end, colors color)
+void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 {
 	int16_t steep = abs(y_end - y_start) > abs(x_end - x_start);
 

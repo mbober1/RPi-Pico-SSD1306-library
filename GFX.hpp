@@ -25,7 +25,7 @@ class GFX : public SSD1306 {
         void drawRectangle(int x, int y, uint16_t w, uint16_t h, colors color = colors::WHITE);
         void drawHorizontalLine(int x, int y, int w, colors color = colors::WHITE);
         void drawVerticalLine(int x, int y, int w, colors color = colors::WHITE);
-        void writeLine(int x_start, int y_start, int x_end, int y_end, colors color = colors::WHITE);
+        void drawLine(int x_start, int y_start, int x_end, int y_end, colors color = colors::WHITE);
 
 };
 

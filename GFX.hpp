@@ -13,16 +13,12 @@
 
 class GFX : public SSD1306 {
     const uint8_t* font = font_8x5;
-    uint8_t size = 1;
-
 
     public:
-        GFX(uint16_t const DevAddr, uint8_t const width, uint8_t const height, i2c_inst_t * i2c);
+        GFX(uint16_t const DevAddr, size Size, i2c_inst_t * i2c);
 
         void drawChar(int x, int y, char chr, colors color = colors::WHITE);
         void drawString(int x, int y, std::string str, colors color = colors::WHITE);
-        void drawString(int x, int y, char* str, colors color = colors::WHITE);
-
         void drawProgressBar(int x, int y, uint16_t w, uint16_t h, uint8_t progress, colors color = colors::WHITE);
         void drawFillRectangle(int x, int y, uint16_t w, uint16_t h, colors color = colors::WHITE);
         void drawRectangle(int x, int y, uint16_t w, uint16_t h, colors color = colors::WHITE);

@@ -15,10 +15,10 @@ int main() {
     gpio_pull_up(2);                        //Pull up GPIO2
     gpio_pull_up(3);                        //Pull up GPIO3
 
-    GFX oled(0x3C, 128, 64, i2c1);          //Declare oled instance
+    GFX oled(0x3C, size::W128xH32, i2c1);   //Declare oled instance
 
     oled.display(logo);                     //Display bitmap
-
+    
     while(true) 
     {
         sleep_ms(1000);
@@ -26,7 +26,8 @@ int main() {
         oled.drawString(0, 0, "Raspberry Pico");
         oled.drawString(0, 10, "Oled Example");
         oled.drawString(0, 20, "Have fun!");
-        oled.drawProgressBar(0, oled.getHeight()-10, oled.getWidth(), 10, rand() % 100 + 1);
+        oled.drawProgressBar(0, oled.getHeight()-5, oled.getWidth(), 5, rand() % 100 + 1);
+
         oled.display();                     //Send buffer to the screen
     }
     return 0;

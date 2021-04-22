@@ -12,8 +12,11 @@
             Pointer to an existing i2c instance.
     @return SSD1306 object.
 */
-SSD1306::SSD1306(uint16_t const DevAddr, uint8_t const width, uint8_t const height, i2c_inst_t * i2c) : DevAddr(DevAddr), width(width), height(height), i2c(i2c) 
+SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(DevAddr), width(width), height(height), i2c(i2c), Size(Size)
 {
+	this->width = 128;
+	this->height = 64;
+	
 	this->buffer = new unsigned char[this->width*this->height/8];
 	this->sendCommand(SSD1306_DISPLAYOFF);
 
@@ -129,15 +132,16 @@ void SSD1306::setContrast(uint8_t Contrast)
  */
 void SSD1306::drawPixel(int16_t x, int16_t y, colors Color)
 {
-	 if ((x < 0) || (x >= this->width) || (y < 0) || (y >= this->height))
-		 return;
 
-	 switch(Color)
-	 {
-		 case colors::WHITE:   this->buffer[x+ (y/8) * this->width] |=  (1 << (y&7)); break;
-		 case colors::BLACK:   this->buffer[x+ (y/8) * this->width] &= ~(1 << (y&7)); break;
-		 case colors::INVERSE: this->buffer[x+ (y/8) * this->width] ^=  (1 << (y&7)); break;
-	 }
+	if ((x < 0) || (x >= this->width) || (y < 0) || (y >= this->height)) return;
+	if(Size == size::W128xH32)  y = (y<<1) + 1;
+
+	switch(Color)
+	{
+		case colors::WHITE:   this->buffer[x+ (y/8) * this->width] |=  (1 << (y&7)); break;
+		case colors::BLACK:   this->buffer[x+ (y/8) * this->width] &= ~(1 << (y&7)); break;
+		case colors::INVERSE: this->buffer[x+ (y/8) * this->width] ^=  (1 << (y&7)); break;
+	}
 }
 
 
@@ -190,7 +194,8 @@ void SSD1306::sendData(uint8_t* buffer, size_t buff_size)
  */
 uint8_t SSD1306::getHeight()
 {
-	return this->height;
+	if(this->Size == size::W128xH64) return 64;
+	else return 32;
 }
 
 /*!

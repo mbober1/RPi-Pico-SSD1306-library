@@ -1,7 +1,7 @@
 #include "GFX.hpp"
 
 
-GFX::GFX(uint16_t const DevAddr, uint8_t const width, uint8_t const height, i2c_inst_t * i2c) : SSD1306(DevAddr, width, height, i2c) {};
+GFX::GFX(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : SSD1306(DevAddr, Size, i2c) {};
 
 
 void GFX::drawChar(int x, int y, char chr, colors color)
@@ -14,26 +14,12 @@ void GFX::drawChar(int x, int y, char chr, colors color)
 
         for(int8_t j=0; j<this->font[0]; j++, line >>= 1)
         {
-            if(line & size == 1)
+            if(line & 1)
             {
             	this->drawPixel(x+i, y+j, color);
             }
         }
     }
-}
-
-
-void GFX::drawString(int x, int y, char* str, colors color)
-{
-	int x_tmp = x;
-	char znak;
-	znak = *str;
-	while(*str++)
-	{
-		this->drawChar(x_tmp, y, znak, color);
-		x_tmp += ((uint8_t)font[1] * size) + 1;
-		znak = *str;
-	}
 }
 
 
@@ -44,7 +30,7 @@ void GFX::drawString(int x, int y, std::string str, colors color)
 	while(str.length())
 	{
 		this->drawChar(x_tmp, y, str.front(), color);
-		x_tmp += ((uint8_t)font[1] * size) + 1;
+		x_tmp += ((uint8_t)font[1]) + 1;
 		str.erase(str.begin());
 	}
 }

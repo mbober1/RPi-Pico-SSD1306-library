@@ -158,13 +158,13 @@ void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 	int16_t steep = abs(y_end - y_start) > abs(x_end - x_start);
 
 	if (steep) {
-		this->swap(x_start, y_start);
-		this->swap(x_end, y_end);
+		swap(x_start, y_start);
+		swap(x_end, y_end);
 	}
 
 	if (x_start > x_end) {
-		this->swap(x_start, x_end);
-		this->swap(y_start, y_end);
+		swap(x_start, x_end);
+		swap(y_start, y_end);
 	}
 
 	int16_t dx = x_end - x_start;

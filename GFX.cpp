@@ -4,9 +4,9 @@ namespace {
 
 	inline static void swap(int &a, int &b) 
 	{
-	    int tmp = a;
-	    a = b;
-	    b = tmp;
+		int tmp = a;
+		a = b;
+		b = tmp;
 	}
 	
 };
@@ -36,16 +36,16 @@ void GFX::drawChar(int x, int y, char chr, colors color)
 
 	for(uint8_t i=0; i < this->font[1]; i++ )
 	{
-        uint8_t line = (uint8_t)(this->font)[(chr-0x20) * (this->font)[1] + i + 2];
+		uint8_t line = (uint8_t)(this->font)[(chr-0x20) * (this->font)[1] + i + 2];
 
-        for(int8_t j=0; j<this->font[0]; j++, line >>= 1)
-        {
-            if(line & 1)
-            {
-            	this->drawPixel(x+i, y+j, color);
-            }
-        }
-    }
+		for(int8_t j=0; j<this->font[0]; j++, line >>= 1)
+		{
+			if(line & 1)
+			{
+				this->drawPixel(x+i, y+j, color);
+			}
+		}
+	}
 }
 
 
@@ -81,10 +81,10 @@ void GFX::drawString(int x, int y, std::string str, colors color)
  */
 void GFX::drawRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
 {
-    this->drawHorizontalLine(x, y, w, color);
-    this->drawHorizontalLine(x, y+h-1, w, color);
-    this->drawVerticalLine(x, y, h, color);
-    this->drawVerticalLine(x+w-1, y, h, color);
+	this->drawHorizontalLine(x, y, w, color);
+	this->drawHorizontalLine(x, y+h-1, w, color);
+	this->drawVerticalLine(x, y, h, color);
+	this->drawVerticalLine(x+w-1, y, h, color);
 }
 
 
@@ -99,9 +99,10 @@ void GFX::drawRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
  */
 void GFX::drawFillRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
 {
-    for (int i=x; i<x+w; i++) {
-    	this->drawVerticalLine(i, y, h, color);
-    }
+	for (int i=x; i<x+w; i++) 
+	{
+		this->drawVerticalLine(i, y, h, color);
+	}
 }
 
 
@@ -117,8 +118,8 @@ void GFX::drawFillRectangle(int x, int y, uint16_t w, uint16_t h, colors color)
  */
 void GFX::drawProgressBar(int x, int y, uint16_t w, uint16_t h, uint8_t progress, colors color)
 {
-    this->drawRectangle(x, y, w, h, color);
-    this->drawFillRectangle(x, y, (uint8_t)((w*progress)/100), h, color);
+	this->drawRectangle(x, y, w, h, color);
+	this->drawFillRectangle(x, y, (uint8_t)((w*progress)/100), h, color);
 }
 
 

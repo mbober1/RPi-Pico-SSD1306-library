@@ -32,21 +32,29 @@
 #define SSD1306_SWITCHCAPVCC 0x2
 
 
-enum class colors {
+enum class colors 
+{
 	BLACK,
 	WHITE,
 	INVERSE
 };
 
-enum class size {
+enum class size 
+{
 	W128xH64,
 	W128xH32
+};
+
+enum class state 
+{
+	OFF,
+	ON
 };
 
 
 class SSD1306 {
 	protected:
-        uint16_t DevAddr;
+		uint16_t DevAddr;
 		i2c_inst_t * i2c;
 		uint8_t width;
 		uint8_t height;
@@ -61,14 +69,16 @@ class SSD1306 {
 		SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c);
 		~SSD1306();
 
-		void displayON(uint8_t On);
-		void invertColors(uint8_t Invert);
-		void rotateDisplay(uint8_t Rotate);
+		void changeState(state State);
+		void invertColors(state Invert);
+		void rotateDisplay(state Rotate);
 		void setContrast(uint8_t Contrast);
 
 		void drawPixel(int16_t x, int16_t y, colors Color = colors::WHITE);
 		void clear(colors Color = colors::BLACK);
 		void display(unsigned char *data = nullptr);
+		void addBitmap(const unsigned char *data);
+		uint16_t getBufferSize();
 		uint8_t getHeight();
 		uint8_t getWidth();
 };

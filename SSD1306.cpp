@@ -14,11 +14,27 @@
 */
 SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(DevAddr), width(width), height(height), i2c(i2c), Size(Size)
 {
-	this->width = 128;
-	this->height = 64;
+
+	switch (Size)
+	{
+		case size::W128xH64:
+		{
+			this->width = 128;
+			this->height = 64;
+			break;
+		}
+
+		case size::W128xH32:
+		{
+			this->width = 128;
+			this->height = 32;
+			break;
+		}
+	}
 	
-	this->buffer = new unsigned char[this->width*this->height/8];
-	this->sendCommand(SSD1306_DISPLAYOFF);
+	this->buffer = new unsigned char[this->getBufferSize()];
+
+	this->changeState(state::OFF);
 
 	this->sendCommand(SSD1306_SETLOWCOLUMN);
 	this->sendCommand(SSD1306_SETHIGHCOLUMN);
@@ -28,7 +44,7 @@ SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(
 	
 	this->setContrast(0xFF);
 
-	this->rotateDisplay(1);
+	this->rotateDisplay(state::ON);
 
 	this->sendCommand(SSD1306_NORMALDISPLAY);
 
@@ -55,7 +71,7 @@ SSD1306::SSD1306(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : DevAddr(
 
 	this->sendCommand(SSD1306_DISPLAYALLON_RESUME);
 
-	this->displayON(1);
+	this->changeState(state::ON);
 	this->clear();
 	this->display();
 }
@@ -85,38 +101,90 @@ void SSD1306::sendCommand(uint8_t command)
  * @brief Invert colors.
  *
  */
-void SSD1306::invertColors(uint8_t Invert)
+void SSD1306::invertColors(state Invert)
 {
-	this->sendCommand(Invert ? SSD1306_INVERTDISPLAY : SSD1306_NORMALDISPLAY);
+
+	switch (Invert)
+	{
+
+		case state::OFF:
+		{
+			this->sendCommand(SSD1306_NORMALDISPLAY);
+			break;
+		}
+
+		case state::ON:
+		{
+			this->sendCommand(SSD1306_INVERTDISPLAY);
+			break;
+		}
+
+	}
+
 }
 
 
 /*!
  * @brief Rotate display.
- *
+ * @param[in] Rotate Choose whether you want to turn screen rotation on or off
  */
-void SSD1306::rotateDisplay(uint8_t Rotate)
+void SSD1306::rotateDisplay(state Rotate)
 {
-	if(Rotate > 1) Rotate = 1;
 
-	this->sendCommand(0xA0 | (0x01 & Rotate));  // Set Segment Re-Map Default
-							// 0xA0 (0x00) => column Address 0 mapped to 127
-                			// 0xA1 (0x01) => Column Address 127 mapped to 0
+	// Set Segment Re-Map Default
+	// 0xA0 (0x00) => Column Address 0 mapped to 127
+	// 0xA1 (0x01) => Column Address 127 mapped to 0
 
-	this->sendCommand(0xC0 | (0x08 & (Rotate<<3)));  // Set COM Output Scan Direction
-							// 0xC0	(0x00) => normal mode (RESET) Scan from COM0 to COM[N-1];Where N is the Multiplex ratio.
-							// 0xC8	(0xC8) => remapped mode. Scan from COM[N-1] to COM0;;Where N is the Multiplex ratio.
+	// Set COM Output Scan Direction
+	// 0xC0	(0x00) => normal mode (RESET) Scan from COM0 to COM[N-1];Where N is the Multiplex ratio.
+	// 0xC8	(0xC8) => remapped mode. Scan from COM[N-1] to COM0;;Where N is the Multiplex ratio.
+
+	switch (Rotate)
+	{
+
+		case state::OFF:
+		{
+			this->sendCommand(0xA0);
+			this->sendCommand(0xC0);
+			break;
+		}
+
+		case state::ON:
+		{
+			uint8_t rotate = 1;
+			this->sendCommand(0xA1);
+			this->sendCommand(0xC8);
+			break;
+		}
+
+	}
+
 }
 
 
 /*!
- * @brief Turn on display.
- * 0 – Turn OFF
- * 1 – Turn ON
+ * @brief Turn on/off display.
+ * @param[in] State Choose whether you want to turn the screen on or off
  */
-void SSD1306::displayON(uint8_t On)
+void SSD1306::changeState(state State)
 {
-	this->sendCommand(On ? SSD1306_DISPLAYON : SSD1306_DISPLAYOFF);
+	switch (State)
+	{
+
+		case state::OFF:
+		{
+			this->sendCommand(SSD1306_DISPLAYOFF);
+			break;
+		}
+
+		case state::ON:
+		{
+			this->sendCommand(SSD1306_DISPLAYON);
+			break;
+		}
+
+	}
+	
 }
 
 
@@ -141,7 +209,8 @@ void SSD1306::drawPixel(int16_t x, int16_t y, colors Color)
 {
 
 	if ((x < 0) || (x >= this->width) || (y < 0) || (y >= this->height)) return;
-	if(Size == size::W128xH32)  y = (y<<1) + 1;
+
+	if(Size == size::W128xH32)  y = (y<<1) + 1; // FIX THIS!
 
 	switch(Color)
 	{
@@ -161,10 +230,10 @@ void SSD1306::clear(colors Color)
 	switch (Color)
 	{
 		case colors::WHITE:
-			memset(buffer, 0xFF, (this->height * this->width / 8));
+			memset(buffer, 0xFF, this->getBufferSize());
 			break;
 		case colors::BLACK:
-			memset(buffer, 0x00, (this->height * this->width / 8));
+			memset(buffer, 0x00, this->getBufferSize());
 			break;
 	}
 }
@@ -180,7 +249,7 @@ void SSD1306::display(unsigned char *data)
 	this->sendCommand(0x22);
 	this->sendCommand(0x00);
 	this->sendCommand(0x07);
-	this->sendData(data, this->width*this->height/8);
+	this->sendData(data, this->getBufferSize());
 }
 
 
@@ -201,9 +270,9 @@ void SSD1306::sendData(uint8_t* buffer, size_t buff_size)
  */
 uint8_t SSD1306::getHeight()
 {
-	if(this->Size == size::W128xH64) return 64;
-	else return 32;
+	return this->height;
 }
+
 
 /*!
  * @brief Return display width.
@@ -212,4 +281,31 @@ uint8_t SSD1306::getHeight()
 uint8_t SSD1306::getWidth()
 {
 	return this->width;
+}
+
+
+/*!
+ * @brief Return buffer size in bytes.
+ * @return Buffer size.
+ */
+uint16_t SSD1306::getBufferSize()
+{
+	return this->height * this->width / 8;
+}
+
+
+/*!
+ * @brief Paste bitmap to display buffer.
+ * You can overwrite your screen with a bitmap and then write or draw on it.
+ * Remember that the bitmap should be exactly the same size as the display.
+ * @param[in] data Pointer to bitmap array
+ */
+void SSD1306::addBitmap(const unsigned char *data)
+{
+	if(data == nullptr) 
+	{
+		return;
+	}
+
+	memcpy(this->buffer, data, this->getBufferSize());
 }

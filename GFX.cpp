@@ -1,5 +1,13 @@
 #include "GFX.hpp"
 
+namespace {
+	inline static void swap(int &a, int &b) {
+	    int tmp = a;
+	    a = b;
+	    b = tmp;
+	}
+};
+
 /**
  * Create GFX instantion 
  *
@@ -180,9 +188,6 @@ void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 	}
 }
 
-
-inline void GFX::swap(int &a, int &b) {
-    int tmp = a;
-    a = b;
-    b = tmp;
+void GFX::setFont(const uint8_t* font){
+	this->font = font;
 }

@@ -191,3 +191,6 @@ void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 void GFX::setFont(const uint8_t* font){
 	this->font = font;
 }
+const uint8_t* GFX::getFont(){
+	return font;
+}

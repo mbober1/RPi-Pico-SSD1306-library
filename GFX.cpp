@@ -1,12 +1,16 @@
 #include "GFX.hpp"
 
 namespace {
-	inline static void swap(int &a, int &b) {
+
+	inline static void swap(int &a, int &b) 
+	{
 	    int tmp = a;
 	    a = b;
 	    b = tmp;
 	}
+	
 };
+
 
 /**
  * Create GFX instantion 
@@ -16,6 +20,7 @@ namespace {
  * @param i2c i2c instance
  */
 GFX::GFX(uint16_t const DevAddr, size Size, i2c_inst_t * i2c) : SSD1306(DevAddr, Size, i2c) {};
+
 
 /**
  * @brief Draw one char.
@@ -42,6 +47,7 @@ void GFX::drawChar(int x, int y, char chr, colors color)
         }
     }
 }
+
 
 /**
  * @brief Draw string.
@@ -157,12 +163,14 @@ void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 {
 	int16_t steep = abs(y_end - y_start) > abs(x_end - x_start);
 
-	if (steep) {
+	if (steep) 
+	{
 		swap(x_start, y_start);
 		swap(x_end, y_end);
 	}
 
-	if (x_start > x_end) {
+	if (x_start > x_end) 
+	{
 		swap(x_start, x_end);
 		swap(y_start, y_end);
 	}
@@ -173,24 +181,55 @@ void GFX::drawLine(int x_start, int y_start, int x_end, int y_end, colors color)
 	int16_t err = dx / 2;
 	int16_t ystep;
 
-	if (y_start < y_end) ystep = 1;
-	else ystep = -1;
+	if (y_start < y_end) 
+	{
+		ystep = 1;
+	}
+	else
+	{
+		ystep = -1;
+	}
 
-	while(x_start <= x_end) {
-		if (steep) this->drawPixel(y_start, x_start, color);
-		else this->drawPixel(x_start, y_start, color);
+	while (x_start <= x_end) 
+	{
+		if (steep) 
+		{
+			this->drawPixel(y_start, x_start, color);
+		}
+		else
+		{
+			this->drawPixel(x_start, y_start, color);
+		}
+
 		x_start++;
 		err -= dy;
-		if (err < 0) {
+
+		if (err < 0) 
+		{
 			y_start += ystep;
 			err += dx;
 		}
 	}
 }
 
-void GFX::setFont(const uint8_t* font){
+
+/**
+ * @brief Set your own font
+ *
+ * @param font Pointer to array with your font
+ */
+void GFX::setFont(const uint8_t* font)
+{
 	this->font = font;
 }
-const uint8_t* GFX::getFont(){
+
+
+/**
+ * @brief Get pointer to font array
+ *
+ * @return Pointer to array with the currently used font
+ */
+const uint8_t* GFX::getFont()
+{
 	return font;
 }

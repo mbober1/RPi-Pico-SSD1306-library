@@ -13,8 +13,6 @@
 class GFX : public SSD1306 {
     const uint8_t* font = font_8x5;
 
-    static void swap(int &a, int &b);
-
     public:
         GFX(uint16_t const DevAddr, size Size, i2c_inst_t * i2c);
 
@@ -27,6 +25,7 @@ class GFX : public SSD1306 {
         void drawVerticalLine(int x, int y, int w, colors color = colors::WHITE);
         void drawLine(int x_start, int y_start, int x_end, int y_end, colors color = colors::WHITE);
 
+        void setFont(const uint8_t* font);
 };
 
 #endif
